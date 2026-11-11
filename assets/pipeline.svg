@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 196" width="960" height="196" role="img" aria-labelledby="t d">
+  <title id="t">Garuda pipeline</title>
+  <desc id="d">Tracking data at 25 Hz becomes identity-free features at 5 Hz, a LightGBM model gives home, away and dead-ball probabilities, a semi-Markov decoder turns them into possession spells, and the output is one label per frame.</desc>
+  <style>
+    .card { fill: #ffffff; stroke: #e3e1dc; stroke-width: 1.5; }
+    .hl { fill: #f2f7fd; stroke: #2a78d6; stroke-width: 1.5; }
+    .step { font: 600 11px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #2a78d6; letter-spacing: .08em; }
+    .h { font: 600 15px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #1d1d1b; }
+    .s { font: 12.5px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #5f5e5a; }
+    .arrow { stroke: #9a9893; stroke-width: 1.5; fill: none; }
+    .head { fill: #9a9893; }
+    .H { fill: #2a78d6; } .A { fill: #eb6834; } .D { fill: #9a9893; } .X { fill: #e3e1dc; }
+    @media (prefers-color-scheme: dark) {
+      .card { fill: #1c1f24; stroke: #33373d; }
+      .hl { fill: #18243a; stroke: #4b8fe0; }
+      .step { fill: #4b8fe0; }
+      .h { fill: #ecebe7; }
+      .s { fill: #a7a6a1; }
+      .H { fill: #4b8fe0; } .A { fill: #de5f2b; } .X { fill: #33373d; }
+    }
+  </style>
+  <defs><marker id="m" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="8" markerHeight="8" orient="auto"><path class="head" d="M0 0 8 4 0 8z"/></marker></defs>
+
+  <g transform="translate(8 20)">
+    <rect class="card" width="168" height="150" rx="10"/>
+    <text class="step" x="16" y="28">01 · INPUT</text>
+    <text class="h" x="16" y="52">Tracking</text>
+    <text class="s" x="16" y="76">Players and ball, 25 Hz</text>
+    <text class="s" x="16" y="94">Smart Tagging events</text>
+    <text class="s" x="16" y="112">Broadcast tracking</text>
+  </g>
+  <path class="arrow" d="M180 95h18" marker-end="url(#m)"/>
+
+  <g transform="translate(204 20)">
+    <rect class="card" width="168" height="150" rx="10"/>
+    <text class="step" x="16" y="28">02 · FEATURES</text>
+    <text class="h" x="16" y="52">Game state, 5 Hz</text>
+    <text class="s" x="16" y="76">Identity-free: robust</text>
+    <text class="s" x="16" y="94">to tracker ID swaps</text>
+    <text class="s" x="16" y="112">±0.2 s to ±4 s context</text>
+    <text class="s" x="16" y="130">+ TV-feed cue</text>
+  </g>
+  <path class="arrow" d="M376 95h18" marker-end="url(#m)"/>
+
+  <g transform="translate(400 20)">
+    <rect class="hl" width="168" height="150" rx="10"/>
+    <text class="step" x="16" y="28">03 · MODEL</text>
+    <text class="h" x="16" y="52">LightGBM</text>
+    <text class="s" x="16" y="76">P(home), P(away),</text>
+    <text class="s" x="16" y="94">P(dead ball)</text>
+    <text class="s" x="16" y="112">Averaged over a</text>
+    <text class="s" x="16" y="130">team-swapped view</text>
+  </g>
+  <path class="arrow" d="M572 95h18" marker-end="url(#m)"/>
+
+  <g transform="translate(596 20)">
+    <rect class="hl" width="168" height="150" rx="10"/>
+    <text class="step" x="16" y="28">04 · DECODER</text>
+    <text class="h" x="16" y="52">Semi-Markov</text>
+    <text class="s" x="16" y="76">Viterbi over spells</text>
+    <text class="s" x="16" y="94">of at least 1 s</text>
+    <text class="s" x="16" y="112">Kickoff rule</text>
+  </g>
+  <path class="arrow" d="M768 95h18" marker-end="url(#m)"/>
+
+  <g transform="translate(792 20)">
+    <rect class="card" width="160" height="150" rx="10"/>
+    <text class="step" x="16" y="28">05 · OUTPUT</text>
+    <text class="h" x="16" y="52">Label per frame</text>
+    <text class="s" x="16" y="76">H · A · D · X</text>
+    <g transform="translate(16 96)">
+      <rect class="X" width="10" height="22" rx="2"/>
+      <rect class="H" x="12" width="34" height="22"/>
+      <rect class="D" x="48" width="10" height="22"/>
+      <rect class="A" x="60" width="24" height="22"/>
+      <rect class="H" x="86" width="20" height="22"/>
+      <rect class="A" x="108" width="20" height="22" rx="2"/>
+    </g>
+  </g>
+</svg>

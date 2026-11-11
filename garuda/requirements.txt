@@ -1,0 +1,10 @@
+# Python 3.11.13, venv at ../.venv (uv)
+numpy==2.4.6
+pandas==2.3.3
+scipy==1.17.1
+kloppy==3.19.1
+floodlight==1.2.0
+lxml==5.4.0
+pyarrow==26.0.0
+scikit-learn==1.9.1
+lightgbm==4.7.0

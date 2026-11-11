@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 190" width="960" height="190" role="img" aria-labelledby="t d">
+  <title id="t">Training data mix</title>
+  <desc id="d">Training frames: DFL 64 percent (1.20 million), Metrica 36 percent (0.69 million). Training weight, with Metrica rows weighted 5: DFL 26 percent, Metrica 74 percent.</desc>
+  <style>
+    .bg { fill: #ffffff; }
+    .dfl { fill: #2a78d6; } .met { fill: #eb6834; }
+    .lab { font: 600 13px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #1d1d1b; }
+    .in { font: 600 12.5px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #ffffff; }
+    .leg { font: 13px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #3d3c39; }
+    .note { font: 12px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #77766f; }
+    .gap { fill: #ffffff; }
+    @media (prefers-color-scheme: dark) {
+      .bg, .gap { fill: #0d1117; }
+      .dfl { fill: #4b8fe0; } .met { fill: #de5f2b; }
+      .lab { fill: #ecebe7; } .leg { fill: #c9c8c3; } .note { fill: #8d8c86; }
+    }
+  </style>
+  <rect class="bg" width="960" height="190"/>
+
+  <g transform="translate(150 22)">
+    <rect class="dfl" width="12" height="12" rx="2"/>
+    <text class="leg" x="18" y="11">DFL / IDSSE: 7 matches, labels relabelled to one convention, 3 degraded copies each</text>
+    <rect class="met" y="22" width="12" height="12" rx="2"/>
+    <text class="leg" x="18" y="33">Metrica sample data: 3 games, clean + 3 degraded copies, rows weighted ×5</text>
+  </g>
+
+  <text class="lab" x="140" y="99" text-anchor="end">Frames</text>
+  <g transform="translate(150 82)">
+    <rect class="dfl" width="508" height="26" rx="4"/>
+    <rect class="met" x="510" width="290" height="26" rx="4"/>
+    <rect class="dfl" x="500" width="8" height="26"/>
+    <rect class="met" x="510" width="8" height="26"/>
+    <text class="in" x="12" y="18">64% · 1.20M</text>
+    <text class="in" x="522" y="18">36% · 0.69M</text>
+  </g>
+
+  <text class="lab" x="140" y="143" text-anchor="end">Training weight</text>
+  <g transform="translate(150 126)">
+    <rect class="dfl" width="207" height="26" rx="4"/>
+    <rect class="met" x="209" width="591" height="26" rx="4"/>
+    <rect class="dfl" x="199" width="8" height="26"/>
+    <rect class="met" x="209" width="8" height="26"/>
+    <text class="in" x="12" y="18">26%</text>
+    <text class="in" x="221" y="18">74%</text>
+  </g>
+
+  <text class="note" x="150" y="180">SkillCorner open data (20 matches) supplies camera behaviour for the TV-feed cue only, no labels. No frame of the competition match is used.</text>
+</svg>

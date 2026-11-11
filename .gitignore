@@ -1,0 +1,10 @@
+# competition data and anything derived from it: never commit (terms of use)
+Initial_Challenge-Dataset/
+data/
+outputs/
+# open datasets: download as described in the README
+external/
+.venv/
+__pycache__/
+*.npz
+.DS_Store

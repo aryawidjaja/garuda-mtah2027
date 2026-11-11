@@ -1,0 +1,7 @@
+{
+ "min_s": [1, 1, 1],
+ "alpha": 1.0,
+ "mbr": false,
+ "tag_beta": 0,
+ "tag_gamma": 0
+}
