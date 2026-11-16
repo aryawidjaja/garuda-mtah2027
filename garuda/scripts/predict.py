@@ -33,11 +33,17 @@ def load_model():
     import lightgbm as lgb
     cfg = json.load(open(os.path.join(MODEL_DIR, "config.json")))
     features.VERSION = int(cfg.get("feature_version", 1))   # features exactly as the model was trained
+    gru = None
+    if cfg.get("gru"):   # before LightGBM starts its OpenMP pool: changing torch threads afterwards can hang on macOS
+        import torch
+        from garuda import seq
+        torch.set_num_threads(1)    # one thread: a fixed summation order, so the output is the same run to run
+        gru = seq.load(os.path.join(MODEL_DIR, cfg["gru"]))
     booster = lgb.Booster(model_file=os.path.join(MODEL_DIR, "lgbm.txt"))
-    return booster, cfg
+    return booster, cfg, gru
 
 
-def decode_half(booster, cfg, sub, sp_windows, goals, kos, live25=None):
+def decode_half(booster, cfg, sub, sp_windows, goals, kos, live25=None, gru=None):
     names, X = features.build(sub)
     _, Xs = features.build(sub, swap=True)
     if cfg.get("broadcast_cue"):
@@ -47,6 +53,10 @@ def decode_half(booster, cfg, sub, sp_windows, goals, kos, live25=None):
         names, X, Xs = names + bn, np.hstack([X, B]), np.hstack([Xs, B])
     assert names == cfg["feature_names"], "feature list changed since training"
     p = (booster.predict(X) + booster.predict(Xs)[:, [1, 0, 2]]) / 2
+    if gru is not None:   # v4: mean of LightGBM and GRU probabilities, both with the team-swap average
+        from garuda import seq
+        per = np.zeros(len(X), np.int8)
+        p = (p + (seq.predict(gru, X, per) + seq.predict(gru, Xs, per)[:, [1, 0, 2]]) / 2) / 2
     decode_half.last_proba = p      # per-frame probabilities, saved next to the CSV (pred_dump.npz)
     e = decode.emissions(p, cfg["prior"], cfg["alpha"])
     n5 = len(e)
@@ -77,7 +87,7 @@ def main():
         tg = atd.read_tags(games.require(["smart_tagging"], data_dir=args.data_dir)[0])
     except Exception:  # noqa: BLE001 -- tags are optional evidence; never block the submission
         tg = []
-    booster, cfg = load_model()
+    booster, cfg, gru = load_model()
     cam = None
     if features.VERSION >= 3:
         try:
@@ -121,7 +131,7 @@ def main():
                                               tac_pl=d["players_xy"], bc_pl=bc[2])
         if cfg.get("broadcast_cue"):   # one bit per half, nothing about the match itself
             print(f"broadcast cue half {half}:", "on" if live is not None and not np.isnan(live).all() else "off")
-        lab = decode_half(booster, cfg, sub, sp, goals, sorted(kos), live)
+        lab = decode_half(booster, cfg, sub, sp, goals, sorted(kos), live, gru)
         out[sl] = np.array(list("HAD"))[lab]
         kick = kickoff.apply(out, tg, d["ball_xy"], first, last)   # no live play before a detected kickoff
         kicks.append(-1 if kick is None else int(kick))

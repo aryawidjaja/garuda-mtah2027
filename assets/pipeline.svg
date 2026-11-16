@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 196" width="960" height="196" role="img" aria-labelledby="t d">
   <title id="t">Garuda pipeline</title>
-  <desc id="d">Tracking data at 25 Hz becomes identity-free features at 5 Hz, a LightGBM model gives home, away and dead-ball probabilities, a semi-Markov decoder turns them into possession spells, and the output is one label per frame.</desc>
+  <desc id="d">Tracking data at 25 Hz becomes identity-free features at 5 Hz, a LightGBM model and a small bidirectional GRU give home, away and dead-ball probabilities, averaged, a semi-Markov decoder turns them into possession spells, and the output is one label per frame.</desc>
   <style>
     .card { fill: #ffffff; stroke: #e3e1dc; stroke-width: 1.5; }
     .hl { fill: #f2f7fd; stroke: #2a78d6; stroke-width: 1.5; }
@@ -45,11 +45,11 @@
   <g transform="translate(400 20)">
     <rect class="hl" width="168" height="150" rx="10"/>
     <text class="step" x="16" y="28">03 · MODEL</text>
-    <text class="h" x="16" y="52">LightGBM</text>
+    <text class="h" x="16" y="52">LightGBM + GRU</text>
     <text class="s" x="16" y="76">P(home), P(away),</text>
     <text class="s" x="16" y="94">P(dead ball)</text>
-    <text class="s" x="16" y="112">Averaged over a</text>
-    <text class="s" x="16" y="130">team-swapped view</text>
+    <text class="s" x="16" y="112">Mean of both, each</text>
+    <text class="s" x="16" y="130">with a team-swap view</text>
   </g>
   <path class="arrow" d="M572 95h18" marker-end="url(#m)"/>
 

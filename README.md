@@ -15,6 +15,7 @@
 <p align="center">
   <img alt="Python 3.11" src="https://img.shields.io/badge/python-3.11-2a78d6">
   <img alt="LightGBM 4.7" src="https://img.shields.io/badge/LightGBM-4.7-2a78d6">
+  <img alt="PyTorch 2.5" src="https://img.shields.io/badge/PyTorch-2.5-2a78d6">
   <img alt="CPU only" src="https://img.shields.io/badge/inference-CPU%20%C2%B7%20deterministic-9a9893">
   <a href="LICENSE"><img alt="MIT licence" src="https://img.shields.io/badge/licence-MIT-9a9893"></a>
 </p>
@@ -26,14 +27,15 @@ byte for byte.
 
 ## How it works
 
-<p align="center"><img src="assets/pipeline.svg" alt="Pipeline: tracking, features, LightGBM, semi-Markov decoder, label per frame" width="100%"></p>
+<p align="center"><img src="assets/pipeline.svg" alt="Pipeline: tracking, features, LightGBM and GRU, semi-Markov decoder, label per frame" width="100%"></p>
 
 - **Features.** Game-state descriptors at 5 Hz that never rely on player identity, so tracker ID
   swaps and fragments do no harm: who is near the ball, team shape and speed, ball visibility and
   gaps, over context windows from ±0.2 s to ±4 s. A TV-feed cue adds whether the broadcast is
   showing live play.
-- **Model.** One LightGBM classifier gives home, away and dead-ball probabilities, averaged with a
-  team-swapped view of the same frame.
+- **Model.** A LightGBM classifier and a small bidirectional GRU each give home, away and dead-ball
+  probabilities, each averaged with a team-swapped view. LightGBM reads one moment and its context
+  windows; the GRU reads the whole half as one sequence. The submission uses the mean of the two.
 - **Decoder.** A semi-Markov Viterbi turns probabilities into possession spells of at least one
   second, so the output does not flicker. A kickoff rule marks the time before kickoff as dead.
 
@@ -103,7 +105,7 @@ Training is CPU-only and not bit-reproducible; inference is.
 ```
 garuda/garuda/    data readers, features, degradation simulator, relabelling, decoder
 garuda/scripts/   predict.py, train_final.py, build_external.py and the training helpers
-garuda/model/     the submitted model (LightGBM weights + decoder config)
+garuda/model/     the submitted model (LightGBM and GRU weights + decoder config)
 official-repo/    the organisers' games.py and possession_metrics.py (MIT), used by predict.py
 ```
 

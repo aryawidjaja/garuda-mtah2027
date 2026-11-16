@@ -1,5 +1,5 @@
 """Train the shipped model with the frozen configuration on every open source and write
-garuda/model/{lgbm.txt, config.json}. Training need not be bit-reproducible (official issue #11);
+garuda/model/{lgbm.txt, gru.pt, config.json}. Training need not be bit-reproducible (official issue #11);
 inference with the committed weights is.
 
     python garuda/scripts/train_final.py
@@ -19,7 +19,10 @@ import experiment_sources as es  # noqa: E402
 import experiment_broadcast as eb  # noqa: E402
 import experiment_transplant as et  # noqa: E402
 import exp_weight as ew, exp_weight_cue as ewc  # noqa: E402
-from garuda import broadcast, cue_transplant, ext_data, features  # noqa: E402
+from garuda import broadcast, cue_transplant, ext_data, features, seq  # noqa: E402
+import torch  # noqa: E402
+
+torch.set_num_threads(2)   # GRU training: two threads, as in its experiments
 
 USE_CUE = True   # TV-feed "not shown live" cue (experiments F and G); False reproduces model v1
 METRICA_W = 5    # Metrica rows weighted 5, plus 3 degraded draws each; no SkillCorner label rows.
@@ -28,11 +31,10 @@ METRICA_W = 5    # Metrica rows weighted 5, plus 3 degraded draws each; no Skill
 MODEL_DIR = os.path.join(os.path.dirname(HERE), "model")
 
 
-def main():
-    cfg = json.load(open(os.path.join(ex.OUT, "frozen.json")))
+def rows(lib):
+    """Training rows of every open source: (feature names, Xs, ys, per-block weights)."""
     dfl = ext_data.list_matches("idsse")
     sc = ext_data.list_matches("skillcorner")
-    lib = cue_transplant.build_library(sc) if USE_CUE else None
     Xs, ys = [], []
     for i, m in enumerate(dfl):
         for k in range(ex.K_DRAWS):
@@ -60,12 +62,23 @@ def main():
     if USE_CUE:
         names = list(names) + broadcast.features(np.zeros(10, np.float32))[0]
     w = max(METRICA_W, 1)
-    clf, prior = ew.fit(Xs, ys, [1] * n_dfl + [w] * (len(Xs) - n_dfl)) if METRICA_W else em.fit(Xs, ys)
+    return names, Xs, ys, [1] * n_dfl + [w] * (len(Xs) - n_dfl)
+
+
+def main():
+    cfg = json.load(open(os.path.join(ex.OUT, "frozen.json")))
+    dfl = ext_data.list_matches("idsse")
+    lib = cue_transplant.build_library(ext_data.list_matches("skillcorner")) if USE_CUE else None
+    names, Xs, ys, ws = rows(lib)
+    clf, prior = ew.fit(Xs, ys, ws) if METRICA_W else em.fit(Xs, ys)
+    print("lightgbm fitted", flush=True)
+    gru = seq.train(Xs, ys, ws)   # v4: its probabilities are averaged with LightGBM's
     h, alpha = ex.hsmm_from_labels(dfl, tuple(cfg["min_s"]), cfg["alpha"])
     os.makedirs(MODEL_DIR, exist_ok=True)
     clf.booster_.save_model(os.path.join(MODEL_DIR, "lgbm.txt"))
+    seq.save(gru, os.path.join(MODEL_DIR, "gru.pt"))
     json.dump({
-        "feature_names": list(names), "prior": prior.tolist(), "alpha": alpha,
+        "feature_names": list(names), "prior": prior.tolist(), "gru": "gru.pt", "alpha": alpha,
         "min_dur": h.min_dur.tolist(), "stay": h.stay_probs, "switch": h.switch_matrix,
         "mbr": cfg["mbr"], "broadcast_cue": USE_CUE, "feature_version": features.VERSION, "tag_beta": cfg["tag_beta"], "tag_gamma": cfg["tag_gamma"], "seed": 0,
         "target": ex.TARGET, "metrica_weight": METRICA_W,

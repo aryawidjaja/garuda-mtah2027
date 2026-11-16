@@ -284,5 +284,6 @@
   "metrica_2",
   "metrica_3"
  ],
- "cue_library": "skillcorner camera behaviour only"
+ "cue_library": "skillcorner camera behaviour only",
+ "gru": "gru.pt"
 }
