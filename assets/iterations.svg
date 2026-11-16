@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 146" width="960" height="146" role="img" aria-labelledby="t d">
+  <title id="t">Garuda iterations</title>
+  <desc id="d">Versions: organisers' baseline logic as reference; v1 LightGBM and semi-Markov decoder; v2 TV-feed cue; v3 revised training mix; v4 GRU averaged with LightGBM.</desc>
+  <style>
+    .card { fill: #ffffff; stroke: #e3e1dc; stroke-width: 1.5; }
+    .hl { fill: #f2f7fd; stroke: #2a78d6; stroke-width: 1.5; }
+    .step { font: 600 11px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #2a78d6; letter-spacing: .08em; }
+    .h { font: 600 15px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #1d1d1b; }
+    .s { font: 12.5px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #5f5e5a; }
+    .v { font: 600 22px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #1d1d1b; }
+    .na { font: 12.5px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #9a9893; }
+    .track { fill: #efeee9; } .bar { fill: #9a9893; } .bar.hlb { fill: #2a78d6; }
+    @media (prefers-color-scheme: dark) {
+      .card { fill: #1c1f24; stroke: #33373d; } .hl { fill: #18243a; stroke: #4b8fe0; }
+      .step { fill: #4b8fe0; } .h, .v { fill: #ecebe7; } .s { fill: #a7a6a1; }
+      .track { fill: #2a2e34; } .bar { fill: #6f6e6a; } .bar.hlb { fill: #4b8fe0; }
+    }
+  </style>
+  <g transform="translate(0 8)">
+    <rect class="card" x="1" width="178" height="130" rx="10"/>
+    <text class="step" x="16" y="28">BASELINE</text>
+    <text class="h" x="16" y="52">Organisers' logic</text>
+    <text class="s" x="16" y="76">Nearest player,</text>
+    <text class="s" x="16" y="94">±50-frame vote,</text>
+    <text class="s" x="16" y="112">our reference</text>
+  </g>
+  <g transform="translate(195 8)">
+    <rect class="card" x="1" width="178" height="130" rx="10"/>
+    <text class="step" x="16" y="28">V1</text>
+    <text class="h" x="16" y="52">Classifier + decoder</text>
+    <text class="s" x="16" y="76">LightGBM, 222 features,</text>
+    <text class="s" x="16" y="94">semi-Markov decoder,</text>
+    <text class="s" x="16" y="112">3 open datasets</text>
+  </g>
+  <g transform="translate(390 8)">
+    <rect class="card" x="1" width="178" height="130" rx="10"/>
+    <text class="step" x="16" y="28">V2</text>
+    <text class="h" x="16" y="52">TV-feed cue</text>
+    <text class="s" x="16" y="76">Is the broadcast</text>
+    <text class="s" x="16" y="94">showing live play?</text>
+  </g>
+  <g transform="translate(585 8)">
+    <rect class="card" x="1" width="178" height="130" rx="10"/>
+    <text class="step" x="16" y="28">V3</text>
+    <text class="h" x="16" y="52">Training mix</text>
+    <text class="s" x="16" y="76">SkillCorner labels out,</text>
+    <text class="s" x="16" y="94">Metrica ×5 with</text>
+    <text class="s" x="16" y="112">degraded copies</text>
+  </g>
+  <g transform="translate(780 8)">
+    <rect class="hl" x="1" width="178" height="130" rx="10"/>
+    <text class="step" x="16" y="28">V4</text>
+    <text class="h" x="16" y="52">+ GRU, averaged</text>
+    <text class="s" x="16" y="76">Sequence model reads</text>
+    <text class="s" x="16" y="94">the whole half, mean</text>
+    <text class="s" x="16" y="112">with LightGBM</text>
+  </g>
+</svg>
